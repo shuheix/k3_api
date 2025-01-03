@@ -23,4 +23,3 @@ func (u *CreateUser) Execute(ctx context.Context, cmd api.CreateUserCommand) (*m
 
 	return user, nil
 }
-

@@ -20,7 +20,6 @@ func main() {
 	db.Debug()
 	db.AutoMigrate(&model.User{})
 
-
 	e := echo.New()
 
 	// middleware
@@ -33,7 +32,6 @@ func main() {
 
 	routes := e.Group("/api")
 	routes.POST("/users", handler.Create)
-
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
