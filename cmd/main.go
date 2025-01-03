@@ -1,11 +1,10 @@
 package main
 
 import (
-	"k3_api/internal/domain/models"
-	"k3_api/internal/domain/repository"
-	"k3_api/internal/infrastructure/repository"
-	"k3_api/internal/presentation/handlers"
-	usecase "k3_api/internal/usecase/user"
+	"k3_api/internal/domain/model"
+	"k3_api/internal/infrastructure/persistence"
+	"k3_api/internal/interface/api/handler"
+	"k3_api/internal/usecase"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -13,23 +12,28 @@ import (
 	"gorm.io/gorm"
 )
 
-type userService struct {
-}
-
 func main() {
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connnect db")
 	}
 	db.Debug()
-	db.AutoMigrate(&models.User{})
-	
+	db.AutoMigrate(&model.User{})
+
 
 	e := echo.New()
 
 	// middleware
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
+
+	repo := persistence.NewUserRepository(db)
+	usecase := usecase.NewCreateUserUsecase(repo)
+	handler := handler.NewUserHandler(*usecase)
+
+	routes := e.Group("/api")
+	routes.POST("/users", handler.Create)
+
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

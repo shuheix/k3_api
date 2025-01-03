@@ -1,4 +1,4 @@
-package models
+package model
 
 import "time"
 
@@ -9,6 +9,8 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-type CreateUserParams struct {
-	Name string `json:"name"`
+func NewUser(name string) *User {
+	return &User{
+		Name: name,
+	}
 }
